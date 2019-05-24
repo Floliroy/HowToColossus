@@ -20,7 +20,8 @@ local HORN_ID = 40224
 
 --variables
 HowToColossus.groupUltimates = {}
-HowToColossus.playerTag = ""
+HowToColossus.playerTag = " "
+HowToColossus.targetTag = " "
 
 ---------------------------
 ---- Variables Default ----
@@ -35,7 +36,7 @@ function HowToColossus.CreateSettingsWindow()
 	local panelData = {
 		type = "panel",
 		name = "HowToColossus",
-		displayName = "HowTo|cdf25e4Colossus|r",
+		displayName = "HowTo|caf25ebColossus|r",
 		author = "Floliroy",
 		version = HowToColossus.version,
 		slashCommand = "/htbeam",
@@ -83,6 +84,25 @@ function HowToColossus.Share()
 	end
 end
 
+function HowToColossus.GetTargetTag()
+	local cpt = 0
+	local targetTag = " "
+
+	for i = 1, MAX_BOSSES do
+		if DoesUnitExist("boss" .. i) then
+			targetTag = "boss" .. i
+			cpt = cpt + 1
+		end
+	end
+
+	if cpt == 1 then
+		return targetTag
+	else
+		return "notOneBoss"
+	end
+end
+
+
 function HowToColossus.GetMajorVulneOn(unitTag)
 	local currentTimeStamp = GetGameTimeMilliseconds() / 1000
 
@@ -125,8 +145,8 @@ end
 
 function HowToColossus.GetNextColossus()
 	local ultPercent = 0
-	local name = ""
-	local playerTag = ""
+	local name = " "
+	local playerTag = " "
 
 	for key, value in ipairs(HowToColossus.groupUltimates) do
 		if value.ultType == COLOSSUS and value.ultPercent >= 100 then
@@ -151,7 +171,9 @@ function HowToColossus.OnGroupDeath(eventCode, unitTag, isDead)
 end
 
 function HowToColossus.OnCombatState(eventCode, inCombat)
-	inCombat = inCombat or false 
+	local inCombat = inCombat or false 
+	HowToColossus.targetTag = HowToColossus.GetTargetTag()
+	
 	if not inCombat then
 		HowToColossus.UpdateNext()
 		EVENT_MANAGER:UnregisterForUpdate(HowToColossus.name .. "Alert")
@@ -172,31 +194,33 @@ function HowToColossus.UpdateNext()
 	local playerName, playerTag = HowToColossus.GetNextColossus()
 	HowToColossus.playerTag = playerTag
 
-	HTCAlertName:SetText(playerName .. " NEXT")
-	HTCAlertTimer:SetText("")
+	HTCAlert_Name:SetText(playerName .. "  NEXT")
+	HTCAlert_Timer:SetText("")
 end
 
-function HowToColossus.UpdateIn()	
-	if HowToColossus.GetMajorVulneOn("boss1") <= 0 then
-		HTCAlertTimer:SetText("ASAP")
+function HowToColossus.UpdateIn(majorVulne)	
+	if majorVulne <= 0 then
+		HTCAlert_Timer:SetText("ASAP")
 	else
-		HTCAlertTimer:SetText("IN " .. HowToColossus.GetMajorVulneOn("boss1"))
+		HTCAlert_Timer:SetText("IN  " .. majorVulne)
 	end
 
-	if HowToColossus.GetMajorVulneOn("boss1") > 4.9 then
+	if majorVulne > 4.9 then
 		local playerName, playerTag = HowToColossus.GetNextColossus()
 		HowToColossus.playerTag = playerTag
 
-		HTCAlertName:SetText(playerName)
+		HTCAlert_Name:SetText(playerName)
 
 	end
 end
 
 function HowToColossus.UpdateAlert()
-	if HowToColossus.playerTag == "" or (HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent < 10 and HowToColossus.GetMajorVulneOn("boss1") <= 0) then
+	local majorVulne = HowToColossus.GetMajorVulneOn(HowToColossus.targetTag)
+
+	if HowToColossus.playerTag == "" or (HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent < 10 and majorVulne <= 0) then
 		HowToColossus.UpdateNext()
 	else
-		HowToColossus.UpdateIn()
+		HowToColossus.UpdateIn(majorVulne)
 	end
 end
 
@@ -206,6 +230,12 @@ function HowToColossus:Initialize()
 	
 	--Saved Variables
 	HowToColossus.savedVariables = ZO_SavedVars:New("HowToColossusVariables", 1, nil, HowToColossus.Default)
+
+	--UI
+	HTCAlert_Name:SetHidden(false)
+	HTCAlert_Timer:SetHidden(false)
+	HTCAlert_Text:SetHidden(false)
+
 
 	--Events Register HowToColossus.OnCombatState
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.OnCombatState)
@@ -220,8 +250,8 @@ function HowToColossus:Initialize()
 end
 
 function HowToColossus.SaveLoc()
-	HowToColossus.savedVariables.OffsetX = HowToColossusAlert:GetLeft()
-	HowToColossus.savedVariables.OffsetY = HowToColossusAlert:GetTop()
+	HowToColossus.savedVariables.OffsetX = HTCAlert:GetLeft()
+	HowToColossus.savedVariables.OffsetY = HTCAlert:GetTop()
 end	
  
 function HowToColossus.OnAddOnLoaded(event, addonName)

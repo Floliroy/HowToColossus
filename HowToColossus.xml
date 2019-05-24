@@ -1,5 +1,6 @@
 <GuiXml>
 	<Controls>
+
 		<TopLevelControl name="HTCAlert" mouseEnabled="true" movable="true">
 			<Dimensions x="200" y="100" />
 			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="800" offsetY="300"/>
@@ -9,15 +10,17 @@
 			</OnMoveStop>
 
 			<Controls>
-				<Label name="$(parent)Text" text=" COLOSSUS " color="DF25E4" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_32)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
-					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="$(parent)"/>
+				<Label name="$(parent)_Text" text="  COLOSSUS  " color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="LEFT" relativePoint="CENTER" relativeTo="$(parent)_Name"/>
 				</Label>
-				<Label name="$(parent)Name" text="@Floliroy" color="DF25E4" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="LEFT" >
-					<Anchor point="CENTER" relativePoint="LEFT" relativeTo="$(parent)Text"/>
+				<Label name="$(parent)_Name" text="@FLOLIROY" color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="RIGHT" relativePoint="CENTER" relativeTo="$(parent)"/>
 				</Label>
-				<Label name="$(parent)Timer" text="4.2" color="DF25E4" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="RIGHT" >
-					<Anchor point="CENTER" relativePoint="RIGHT" relativeTo="$(parent)Text"/>
+				<Label name="$(parent)_Timer" text="IN 4.2" color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="LEFT" relativePoint="CENTER" relativeTo="$(parent)_Text"/>
+				</Label>
 			</Controls>
+
 		</TopLevelControl>
 	</Controls>
 </GuiXml>

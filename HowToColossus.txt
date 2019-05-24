@@ -1,4 +1,4 @@
-﻿## Title: HowTo|cdf25e4Colossus|r
+﻿## Title: HowTo|caf25ebColossus|r
 ## APIVersion: 100027
 ## Author: Floliroy
 ## Version: 0.1
