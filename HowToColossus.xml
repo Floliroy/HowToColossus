@@ -1,18 +1,23 @@
 <GuiXml>
-    <Controls>	
-		<TopLevelControl name="HowToColossusAlert" mouseEnabled="true"  movable="true">
-			<Dimensions x="200" y="30" />
+	<Controls>
+		<TopLevelControl name="HTCAlert" mouseEnabled="true" movable="true">
+			<Dimensions x="200" y="100" />
 			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="800" offsetY="300"/>
 			
 			<OnMoveStop>
-          	  HowToColossus.SaveLoc()
-       	</OnMoveStop>
-		 
+				HowToColossus.SaveLoc()
+			</OnMoveStop>
+
 			<Controls>
-				<Label name="HowToColossusLabel" font="$(BOLD_FONT)|$(KB_40)|soft-shadow-thick" color="FF1E03" wrapMode="ELLIPSIS" text="COLOSSUS">
-						<Anchor relativeTo="$(parent)"  point="CENTER"/>
+				<Label name="$(parent)Text" text=" COLOSSUS " color="DF25E4" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_32)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="$(parent)"/>
 				</Label>
+				<Label name="$(parent)Name" text="@Floliroy" color="DF25E4" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="LEFT" >
+					<Anchor point="CENTER" relativePoint="LEFT" relativeTo="$(parent)Text"/>
+				</Label>
+				<Label name="$(parent)Timer" text="4.2" color="DF25E4" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="RIGHT" >
+					<Anchor point="CENTER" relativePoint="RIGHT" relativeTo="$(parent)Text"/>
 			</Controls>
 		</TopLevelControl>
-    </Controls>
+	</Controls>
 </GuiXml>
