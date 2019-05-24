@@ -1,0 +1,18 @@
+<GuiXml>
+    <Controls>	
+		<TopLevelControl name="HowToColossusAlert" mouseEnabled="true"  movable="true">
+			<Dimensions x="200" y="30" />
+			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="800" offsetY="300"/>
+			
+			<OnMoveStop>
+          	  HowToColossus.SaveLoc()
+       	</OnMoveStop>
+		 
+			<Controls>
+				<Label name="HowToColossusLabel" font="$(BOLD_FONT)|$(KB_40)|soft-shadow-thick" color="FF1E03" wrapMode="ELLIPSIS" text="COLOSSUS">
+						<Anchor relativeTo="$(parent)"  point="CENTER"/>
+				</Label>
+			</Controls>
+		</TopLevelControl>
+    </Controls>
+</GuiXml>
