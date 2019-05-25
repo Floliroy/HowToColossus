@@ -1,6 +1,5 @@
 local LGPS = LibStub("LibGPS2")
 local LMP = LibStub("LibMapPing")
-LMP:MutePing(MAP_PIN_TYPE_PING)
 
 HowToColossus = HowToColossus or {}
 local HowToColossus = HowToColossus
@@ -33,14 +32,10 @@ function HowToColossus.GetUltimates()
 end
 
 function HowToColossus.SendUltimate(ultType, ultPercent)
+    LMP:MutePing(MAP_PIN_TYPE_PING)
+
 	LGPS:PushCurrentMap()
 	SetMapToMapListIndex(WROTHGAR_MAP_INDEX)
-
-    --HowToColossus.groupUltimates["group0"] = {
-    --   name = GetUnitDisplayName("player"),
-    --    ultType = ultType,
-    --    ultPercent = ultPercent
-    --}
 
     local x = ultType * WROTHGAR_MAP_STEP_SIZE
     local y = ultPercent * WROTHGAR_MAP_STEP_SIZE
