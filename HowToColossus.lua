@@ -241,6 +241,12 @@ function HowToColossus.UpdateAlert()
 	end
 end
 
+local cpt = 0
+function HowToColossus.Test(eventCode, unitTag, powerIndex, powerType, powerValue, powerMax, powerEffectiveMax)
+	cpt = cpt + 1
+	d("CPT= " .. cpt)
+end
+
 function HowToColossus:Initialize()
 
 	--Saved Variables
@@ -266,6 +272,9 @@ function HowToColossus:Initialize()
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Join", EVENT_GROUP_MEMBER_JOINED, HowToColossus.UpdateNext)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Left", EVENT_GROUP_MEMBER_LEFT, HowToColossus.UpdateNext)
 	zo_callLater(function() HowToColossus.UpdateNext() end, 2000)
+
+	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Test", EVENT_POWER_UPDATE, HowToColossus.Test)
+	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Test", EVENT_POWER_UPDATE, REGISTER_FILTER_UNIT_TAG_PREFIX, "group", REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE)
 
 	EVENT_MANAGER:UnregisterForEvent(HowToColossus.name, EVENT_ADD_ON_LOADED)
 	
