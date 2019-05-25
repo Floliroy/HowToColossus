@@ -136,6 +136,10 @@ function HowToColossus.GetNextColossus()
 	return name, playerTag
 end
 
+function HowToColossus.GetNameWithTag()
+	return HowToColossus.groupUltimates[HowToColossus.playerTag].name
+end
+
 function HowToColossus.OnGroupDeath(eventCode, unitTag, isDead)
 	if HowToColossus.playerTag == unitTag and isDead then 
 		HowToColossus.UpdateAlert()
@@ -158,6 +162,12 @@ end
 --------------
 ---- Main ----
 --------------
+function HowToColossus.UltimateUsed()
+	if GetUnitPower("player", POWERTYPE_ULTIMATE) <= 3 then
+		HowToColossus.Share()
+	end
+end
+
 function HowToColossus.UpdateGeneral()
 	HowToColossus.Share()
 	--TODO HowToColossus.UpdatePannel()
@@ -243,6 +253,9 @@ function HowToColossus:Initialize()
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Combat", EVENT_PLAYER_COMBAT_STATE, HowToColossus.OnCombatState)	
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, HowToColossus.OnGroupDeath)
 	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
+
+	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Ultimate", EVENT_POWER_UPDATE, HowToColossus.UltimateUsed)	
+	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Ultimate", EVENT_POWER_UPDATE, REGISTER_FILTER_UNIT_TAG, "player", REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE)
 	
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.UpdateNext)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Join", EVENT_GROUP_MEMBER_JOINED, HowToColossus.UpdateNext)
