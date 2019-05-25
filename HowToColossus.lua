@@ -38,19 +38,6 @@ function HowToColossus.GetUltimatePercent(ultType)
 	return math.min(100, math.floor((current / cost) * 100))
 end
 
-function HowToColossus.Share()
-	HowToColossus.GetUltimates()
-
-	if HowToColossus.shareColossus then
-		local ultPercent = HowToColossus.GetUltimatePercent(COLOSSUS)
-		HowToColossus.SendUltimate(COLOSSUS, ultPercent)
-
-	elseif HowToColossus.shareHorn then
-		local ultPercent = HowToColossus.GetUltimatePercent(HORN)
-		HowToColossus.SendUltimate(HORN, ultPercent)
-	end
-end
-
 function HowToColossus.GetTargetTag()
 	if 1 then
 		return "reticleover"
@@ -72,7 +59,6 @@ function HowToColossus.GetTargetTag()
 		return "notOneBoss"
 	end
 end
-
 
 function HowToColossus.GetMajorVulneOn(unitTag)
 	local currentTimeStamp = GetGameTimeMilliseconds() / 1000
@@ -108,42 +94,9 @@ function HowToColossus.GetHornInGroup()
 	end
 
 	if timerForce == 0 then
-		return timerHorn
+		return timerHorn, "horn"
 	else
-		return timerForce
-	end
-end
-
-function HowToColossus.GetNextColossus(force)
-	local ultPercent = 0
-	local name = ""
-	local playerTag = ""
-
-	for key, value in pairs(HowToColossus.groupUltimates) do
-		if not force or key ~= HowToColossus.playerTag then 
-			if value.ultType == COLOSSUS and value.ultPercent >= 100 then
-				return value.name, key
-
-			elseif value.ultType == COLOSSUS and value.ultPercent > ultPercent then
-
-				ultPercent = value.ultPercent
-				name = value.name
-				playerTag = key
-
-			end
-		end
-	end
-
-	return name, playerTag
-end
-
-function HowToColossus.GetInfoWithTag()
-	if HowToColossus.groupUltimates[HowToColossus.playerTag] then 
-		return 	HowToColossus.groupUltimates[HowToColossus.playerTag].name,
-				HowToColossus.groupUltimates[HowToColossus.playerTag].ultType,
-				HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent
-	else
-		return "", 0, 0
+		return timerForce, "force"
 	end
 end
 
@@ -176,41 +129,35 @@ function HowToColossus.UpdateGeneral()
 	if ultPercent < 10 then
 		local playerName, playerTag = HowToColossus.GetNextColossus(true)
 		HowToColossus.playerTag = playerTag
-		HTCAlert_Name:SetText(string.upper(playerName))
+		ColossusAlert_Name:SetText(string.upper(playerName))
 	end
-	--TODO HowToColossus.UpdatePannel()
+	HowToColossus.UpdateWindowPannel()
 end
 
 function HowToColossus.UpdateNext()
 	local playerName, playerTag = HowToColossus.GetNextColossus(false)
 	HowToColossus.playerTag = playerTag
-	HTCAlert_Name:SetHidden(false)
-	HTCAlert_Timer:SetHidden(false)
-	HTCAlert_Text:SetHidden(false)
+	HowToColossus.SetUIHidden(false)
 
 	if playerName ~= "" then
 		
-		HTCAlert_Name:SetText(string.upper(playerName) .. "  NEXT")
-		HTCAlert_Timer:SetText("")
+		ColossusAlert_Name:SetText(string.upper(playerName) .. "  NEXT")
+		ColossusAlert_Timer:SetText("")
 	else
-		HTCAlert_Name:SetHidden(true)
-		HTCAlert_Timer:SetHidden(true)
-		HTCAlert_Text:SetHidden(true)
+		HowToColossus.SetUIHidden(true)
 	end
 end
 
 local flagMajorVulne = true
 local cptMajorVulne = 3
 function HowToColossus.UpdateIn(majorVulne)	
-	HTCAlert_Name:SetHidden(false)
-	HTCAlert_Timer:SetHidden(false)
-	HTCAlert_Text:SetHidden(false)
+	HowToColossus.SetUIHidden(false)
 
 	if majorVulne > 2.9 then
 		if flagMajorVulne == true then
 			local playerName, playerTag = HowToColossus.GetNextColossus(false)
 			HowToColossus.playerTag = playerTag
-			HTCAlert_Name:SetText(string.upper(playerName))
+			ColossusAlert_Name:SetText(string.upper(playerName))
 
 			flagMajorVulne = false
 		end	
@@ -223,10 +170,10 @@ function HowToColossus.UpdateIn(majorVulne)
 		flagMajorVulne = true 
 		
 		local name, _, _ = HowToColossus.GetInfoWithTag()
-		HTCAlert_Name:SetText(string.upper(name))
-		HTCAlert_Timer:SetText("  ASAP")
+		ColossusAlert_Name:SetText(string.upper(name))
+		ColossusAlert_Timer:SetText("  ASAP")
 	else
-		HTCAlert_Timer:SetText("  IN  " .. tostring(string.format("%.1f", majorVulne + cptMajorVulne)))
+		ColossusAlert_Timer:SetText("  IN  " .. tostring(string.format("%.1f", majorVulne + cptMajorVulne)))
 	end	
 end
 
@@ -257,9 +204,8 @@ function HowToColossus:Initialize()
 	HowToColossus.CreateSettingsWindow()
 	
 	--UI
-	HTCAlert_Name:SetHidden(true)
-	HTCAlert_Timer:SetHidden(true)
-	HTCAlert_Text:SetHidden(true)
+	HowToColossus.SetUIHidden(false)
+	HowToColossus.UpdateWindowPannel()
 
 	--Events Register HowToColossus.OnCombatState
 	EVENT_MANAGER:RegisterForUpdate(HowToColossus.name .. "Update", 900, HowToColossus.UpdateGeneral)
@@ -272,6 +218,7 @@ function HowToColossus:Initialize()
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Join", EVENT_GROUP_MEMBER_JOINED, HowToColossus.UpdateNext)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Left", EVENT_GROUP_MEMBER_LEFT, HowToColossus.UpdateNext)
 	zo_callLater(function() HowToColossus.UpdateNext() end, 2000)
+	zo_callLater(function() HowToColossus.UpdateWindowPannel() end, 2500)
 
 	--EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Test", EVENT_POWER_UPDATE, HowToColossus.Test)
 	--EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Test", EVENT_POWER_UPDATE, REGISTER_FILTER_UNIT_TAG_PREFIX, "group", REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE)
@@ -279,11 +226,6 @@ function HowToColossus:Initialize()
 	EVENT_MANAGER:UnregisterForEvent(HowToColossus.name, EVENT_ADD_ON_LOADED)
 	
 end
-
-function HowToColossus.SaveLoc()
-	--HowToColossus.savedVariables.OffsetX = HTCAlert:GetLeft()
-	--HowToColossus.savedVariables.OffsetY = HTCAlert:GetTop()
-end	
  
 function HowToColossus.OnAddOnLoaded(event, addonName)
 	if addonName ~= HowToColossus.name then return end

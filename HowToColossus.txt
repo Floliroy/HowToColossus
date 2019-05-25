@@ -21,5 +21,6 @@ Lib/LibGroupSocket/handlers/UltimateHandler.lua
 HowToColossusShare.lua
 HowToColossusMenu.lua
 HowToColossus.lua
+HowToColossusUI.lua
 
 HowToColossus.xml

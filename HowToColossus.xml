@@ -1,12 +1,12 @@
 <GuiXml>
 	<Controls>
 
-		<TopLevelControl name="HTCAlert" mouseEnabled="true" movable="true">
-			<Dimensions x="200" y="100" />
+		<TopLevelControl name="ColossusAlert" mouseEnabled="true" movable="true">
+			<Dimensions x="300" y="60" />
 			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="800" offsetY="300"/>
 			
 			<OnMoveStop>
-				HowToColossus.SaveLoc()
+				HowToColossus.SaveColossusLoc()
 			</OnMoveStop>
 
 			<Controls>
@@ -20,7 +20,84 @@
 					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)_Text"/>
 				</Label>
 			</Controls>
-
 		</TopLevelControl>
+		
+		<TopLevelControl name="HornAlert" mouseEnabled="true" movable="true">
+			<Dimensions x="300" y="60" />
+			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="800" offsetY="340"/>
+			
+			<OnMoveStop>
+				HowToColossus.SaveHornLoc()
+			</OnMoveStop>
+
+			<Controls>
+				<Label name="$(parent)_Text" text="  HORN" color="C79700" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="LEFT" relativePoint="CENTER" relativeTo="$(parent)_Name"/>
+				</Label>
+				<Label name="$(parent)_Name" text="@FLOLIROY" color="C79700" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="RIGHT" relativePoint="CENTER" relativeTo="$(parent)"/>
+				</Label>
+				<Label name="$(parent)_Timer" text="  IN 7.4" color="C79700" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)_Text"/>
+				</Label>
+			</Controls>
+		</TopLevelControl>
+
+		<TopLevelControl name="ColossusWindow" mouseEnabled="true" movable="true" resizeToFitDescendents="true" clampedToScreen="true">
+            <Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="800" offsetY="500"/>
+
+            <OnMoveStop>
+				HowToColossus.SaveColossusWin()
+			</OnMoveStop>
+
+			<Controls>
+                <Label name="$(parent)_Title" horizontalAlignment="CENTER" font="ZoFontWinH3" text="Colossus:" wrapMode="TRUNCATE">
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$(parent)"/>
+                    <Dimensions x="120" y="24"/>
+                </Label>
+			</Controls>
+        </TopLevelControl>
+		<Control name="ColossusWindow_Segment" virtual="true" resizeToFitDescendents="true">
+            <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT"/>
+            <Controls>
+                <Label name="$(parent)_Name" horizontalAlignment="left" verticalAlignment="center" font="ZoFontWinH3" text="@Floliroy" wrapMode="TRUNCATE">
+                    <Dimensions x="80" y="24"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$(parent)" offsetX="2"/>
+                </Label>
+                <Label name="$(parent)_Value" horizontalAlignment="right" verticalAlignment="center" font="ZoFontWinH3" text="42%">
+                    <Dimensions x="50" y="24"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$(parent)_Name"/>
+                </Label>
+            </Controls>
+        </Control>
+
+		<TopLevelControl name="HornWindow" mouseEnabled="true" movable="true" resizeToFitDescendents="true" clampedToScreen="true">
+            <Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="1000" offsetY="500"/>
+
+            <OnMoveStop>
+				HowToColossus.SaveHornWin()
+			</OnMoveStop>
+
+			<Controls>
+                <Label name="$(parent)_Title" horizontalAlignment="CENTER" font="ZoFontWinH3" text="Major Force:" wrapMode="TRUNCATE">
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$(parent)"/>
+                    <Dimensions x="120" y="24"/>
+                </Label>
+			</Controls>
+		</TopLevelControl>
+		<Control name="HornWindow_Segment" virtual="true" resizeToFitDescendents="true">
+            <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT"/>
+            <Controls>
+                <Label name="$(parent)_Name" horizontalAlignment="left" verticalAlignment="center" font="ZoFontWinH3" text="@Floliroy" wrapMode="TRUNCATE">
+                    <Dimensions x="80" y="24"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$(parent)" offsetX="2"/>
+                </Label>
+                <Label name="$(parent)_Value" horizontalAlignment="right" verticalAlignment="center" font="ZoFontWinH3" text="74%">
+                    <Dimensions x="50" y="24"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$(parent)_Name"/>
+                </Label>
+            </Controls>
+        </Control>
+		
 	</Controls>
 </GuiXml>

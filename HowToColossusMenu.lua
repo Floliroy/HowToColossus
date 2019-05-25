@@ -10,6 +10,7 @@ HowToColossus.Default = {
 	enabled = true,
 	lockUI = true,
 
+    --general
 	shareColossus = true,
 	showColossus = true,
 	alertColossus = true,
@@ -17,9 +18,20 @@ HowToColossus.Default = {
 	showHorn = true,
     alertHorn = false,
     
+    --alert
     fontSize = 36,
     colorColossus = {175/255,37/255,235/255,1},
     colorHorn = {199/255,151/255,0,1},
+
+    --UI
+    collossusAlertX = 800,
+    collossusAlertY = 300,
+    hornAlertX = 800,
+    hornAlertY = 340,
+    collossusWindowX = 800,
+    collossusWindowY = 500,
+    hornWindowX = 1000,
+    hornWindowY = 500,
 }
 -------------------
 ---- Functions ----
@@ -28,6 +40,7 @@ function HowToColossus.GetSavedVariables()
     HowToColossus.enabled = HowToColossus.savedVariables.enabled
 	HowToColossus.lockUI = HowToColossus.savedVariables.lockUI
 
+    --general
 	HowToColossus.shareColossus = HowToColossus.savedVariables.shareColossus
 	HowToColossus.showColossus = HowToColossus.savedVariables.showColossus
 	HowToColossus.alertColossus = HowToColossus.savedVariables.alertColossus
@@ -35,10 +48,20 @@ function HowToColossus.GetSavedVariables()
 	HowToColossus.showHorn = HowToColossus.savedVariables.showHorn
     HowToColossus.alertHorn = HowToColossus.savedVariables.alertHorn
     
+    --alert
     HowToColossus.fontSize = HowToColossus.savedVariables.fontSize
     HowToColossus.colorColossus = HowToColossus.savedVariables.colorColossus
     HowToColossus.colorHorn = HowToColossus.savedVariables.colorHorn
     
+    --UI
+    HowToColossus.collossusAlertX = HowToColossus.savedVariables.collossusAlertX
+    HowToColossus.collossusAlertY = HowToColossus.savedVariables.collossusAlertY
+    HowToColossus.hornAlertX = HowToColossus.savedVariables.hornAlertX
+    HowToColossus.hornAlertY = HowToColossus.savedVariables.hornAlertY
+    HowToColossus.collossusWindowX = HowToColossus.savedVariables.collossusWindowX
+    HowToColossus.collossusWindowY = HowToColossus.savedVariables.collossusWindowY
+    HowToColossus.hornWindowX = HowToColossus.savedVariables.hornWindowX
+    HowToColossus.hornWindowY = HowToColossus.savedVariables.hornWindowY
 end
 
 --------------
