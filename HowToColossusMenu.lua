@@ -15,7 +15,11 @@ HowToColossus.Default = {
 	alertColossus = true,
 	shareHorn = false,
 	showHorn = true,
-	alertHorn = false,
+    alertHorn = false,
+    
+    fontSize = 36,
+    colorColossus = {175/255,37/255,235/255,1},
+    colorHorn = {199/255,151/255,0,1},
 }
 -------------------
 ---- Functions ----
@@ -29,7 +33,12 @@ function HowToColossus.GetSavedVariables()
 	HowToColossus.alertColossus = HowToColossus.savedVariables.alertColossus
 	HowToColossus.shareHorn = HowToColossus.savedVariables.shareHorn
 	HowToColossus.showHorn = HowToColossus.savedVariables.showHorn
-	HowToColossus.alertHorn = HowToColossus.savedVariables.alertHorn
+    HowToColossus.alertHorn = HowToColossus.savedVariables.alertHorn
+    
+    HowToColossus.fontSize = HowToColossus.savedVariables.fontSize
+    HowToColossus.colorColossus = HowToColossus.savedVariables.colorColossus
+    HowToColossus.colorHorn = HowToColossus.savedVariables.colorHorn
+    
 end
 
 --------------
@@ -50,6 +59,9 @@ function HowToColossus.CreateSettingsWindow()
 	local cntrlOptionsPanel = LAM2:RegisterAddonPanel("HowToColossus_Settings", panelData)
 	
 	local optionsData = {
+        -----------------
+        ---- General ----
+        -----------------
 		{	type = "description",
 			text = "TL;DR: Franchement Baz ...",
         },
@@ -65,6 +77,7 @@ function HowToColossus.CreateSettingsWindow()
                 HowToColossus.savedVariables.enabled = newValue
                 HowToColossus.enabled = newValue 
             end,
+            width = "half",
         },
         {   type = "checkbox",
             name = "Lock UI",
@@ -75,7 +88,24 @@ function HowToColossus.CreateSettingsWindow()
                 HowToColossus.savedVariables.lockUI = newValue
                 HowToColossus.lockUI = newValue 
             end,
+            width = "half",
         },
+        {   type = "slider",
+			name = "Text Size",
+			tooltip = "Here you can set the size of the announcments",
+			min = 20,
+			max = 52,
+			step = 2,
+			default = 36,
+			getFunc = function() return HowToColossus.fontSize end,
+			setFunc = function(newValue) 
+				HowToColossus.savedVariables.fontSize = newValue
+				HowToColossus.fontSize = newValue
+				end,
+        },
+        ------------------
+        ---- Colossus ----
+        ------------------
         {   type = "header",
 			name = "|caf25ebColossus|r Part",
         },
@@ -93,7 +123,7 @@ function HowToColossus.CreateSettingsWindow()
                 HowToColossus.savedVariables.shareColossus = newValue
 				HowToColossus.shareColossus = newValue 
             end,
-            --disabled = function() return GetUnitRaceId("player") ~= 3 end,
+            disabled = function() return GetUnitRaceId("player") ~= 3 end,
         },
         {   type = "checkbox",
             name = "Show Colossus",
@@ -114,7 +144,25 @@ function HowToColossus.CreateSettingsWindow()
                 HowToColossus.savedVariables.alertColossus = newValue
                 HowToColossus.alertColossus = newValue 
             end,
+            width = "half",
         },
+        {   type = "colorpicker",
+            name = "Text Color",
+            tooltip = "Here you can set the color of the colossus announcments",
+            --default = HowToColossus.Default.colorColossus,
+            getFunc = function() return unpack(HowToColossus.colorColossus) end,
+            setFunc = function(r,g,b,a)
+                HowToColossus.savedVariables.colorColossus = {r,g,b,a}
+                HowToColossus.colorColossus = {r,g,b,a}
+                HTCAlert_Name:SetColor(unpack(HowToColossus.savedVariables.colorColossus))
+                HTCAlert_Timer:SetColor(unpack(HowToColossus.savedVariables.colorColossus))
+                HTCAlert_Text:SetColor(unpack(HowToColossus.savedVariables.colorColossus))
+            end,
+            width = "half",
+        },
+        --------------
+        ---- Horn ----
+        --------------
         {   type = "header",
 			name = "|cc79700Horn|r Part",
         },
@@ -127,7 +175,7 @@ function HowToColossus.CreateSettingsWindow()
                 HowToColossus.savedVariables.shareHorn = newValue
 				HowToColossus.shareHorn = newValue 
             end,
-            --disabled = function() return HowToColossus.savedVariables.shareColossus end,
+            disabled = function() return HowToColossus.savedVariables.shareColossus end,
         },
         {   type = "checkbox",
             name = "Show Horn",
@@ -141,14 +189,29 @@ function HowToColossus.CreateSettingsWindow()
         },
         {   type = "checkbox",
             name = "Show Alert",
-            tooltip = "Show an alert who will tell who need to use next Horn, and (if the addon can) when to use it",
+            tooltip = "Show an alert who will tell who need to use next Horn, and when to use it",
             default = false,
             getFunc = function() return HowToColossus.alertHorn end,
             setFunc = function(newValue) 
                 HowToColossus.savedVariables.alertHorn = newValue
                 HowToColossus.alertHorn = newValue 
             end,
+            width = "half",
         },
+        {   type = "colorpicker",
+            name = "Text Color",
+            tooltip = "Here you can set the color of the colossus announcments",
+            --default = HowToColossus.Default.colorColossus,
+            getFunc = function() return unpack(HowToColossus.colorHorn) end,
+            setFunc = function(r,g,b,a)
+                HowToColossus.savedVariables.colorHorn = {r,g,b,a}
+                HowToColossus.colorHorn = {r,g,b,a}
+                --HTCAlert_Name:SetColor(unpack(HowToColossus.savedVariables.colorHorn))
+                --HTCAlert_Timer:SetColor(unpack(HowToColossus.savedVariables.colorHorn))
+                --HTCAlert_Text:SetColor(unpack(HowToColossus.savedVariables.colorHorn))
+            end,
+            width = "half",
+        }, 
 	}
 	LAM2:RegisterOptionControls("HowToColossus_Settings", optionsData)
 end
