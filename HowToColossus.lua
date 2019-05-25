@@ -1,4 +1,3 @@
-local LAM2 = LibStub:GetLibrary("LibAddonMenu-2.0")
 -----------------
 ---- Globals ----
 -----------------
@@ -23,34 +22,6 @@ HowToColossus.groupUltimates = {}
 HowToColossus.playerTag = " "
 HowToColossus.targetTag = " "
 
----------------------------
----- Variables Default ----
----------------------------
-HowToColossus.Default = {
-}
-
--------------------------
----- Settings Window ----
--------------------------
-function HowToColossus.CreateSettingsWindow()
-	local panelData = {
-		type = "panel",
-		name = "HowToColossus",
-		displayName = "HowTo|caf25ebColossus|r",
-		author = "Floliroy",
-		version = HowToColossus.version,
-		slashCommand = "/htbeam",
-		registerForRefresh = true,
-		registerForDefaults = true,
-	}
-	
-	local cntrlOptionsPanel = LAM2:RegisterAddonPanel("HowToColossus_Settings", panelData)
-	
-	local optionsData = {
-	}
-	LAM2:RegisterOptionControls("HowToColossus_Settings", optionsData)
-end
-
 -------------------
 ---- Functions ----
 -------------------
@@ -69,9 +40,6 @@ end
 
 function HowToColossus.Share()
 	HowToColossus.GetUltimates()
-	--TODO add share to settings
-	HowToColossus.shareColossus = true
-	HowToColossus.shareHorn = false
 
 	if HowToColossus.shareColossus then
 		local ultPercent = HowToColossus.GetUltimatePercent(COLOSSUS)
@@ -179,10 +147,7 @@ function HowToColossus.OnCombatState(eventCode, inCombat)
 		HowToColossus.UpdateNext()
 		EVENT_MANAGER:UnregisterForUpdate(HowToColossus.name .. "Alert")
 	else
-		local playerName, playerTag = HowToColossus.GetNextColossus()
-		HowToColossus.playerTag = playerTag
-		HowToColossus.targetTag = HowToColossus.GetTargetTag()
-
+        HowToColossus.targetTag = HowToColossus.GetTargetTag()
 		EVENT_MANAGER:RegisterForUpdate(HowToColossus.name .. "Alert", 100, HowToColossus.UpdateAlert)
 	end
 end
@@ -192,20 +157,33 @@ end
 --------------
 function HowToColossus.UpdateGeneral()
 	HowToColossus.Share()
-	--HowToColossus.UpdatePannel()
+	--TODO HowToColossus.UpdatePannel()
 end
 
 function HowToColossus.UpdateNext()
 	local playerName, playerTag = HowToColossus.GetNextColossus()
 	HowToColossus.playerTag = playerTag
+	HTCAlert_Name:SetHidden(false)
+	HTCAlert_Timer:SetHidden(false)
+	HTCAlert_Text:SetHidden(false)
 
-	HTCAlert_Name:SetText(string.upper(playerName) .. "  NEXT")
-	HTCAlert_Timer:SetText(" ")
+	if playerName ~= " " then
+		
+		HTCAlert_Name:SetText(string.upper(playerName) .. "  NEXT")
+		HTCAlert_Timer:SetText(" ")
+	else
+		HTCAlert_Name:SetHidden(true)
+		HTCAlert_Timer:SetHidden(true)
+		HTCAlert_Text:SetHidden(true)
+	end
 end
 
 function HowToColossus.UpdateIn(majorVulne)	
+	HTCAlert_Name:SetHidden(false)
+	HTCAlert_Timer:SetHidden(false)
+	HTCAlert_Text:SetHidden(false)
+
 	if majorVulne <= 0 then
-		local playerName, playerTag = HowToColossus.GetNextColossus()
 		HTCAlert_Timer:SetText("  ASAP")
 	else
 		HTCAlert_Timer:SetText("  IN  " .. majorVulne)
@@ -237,21 +215,24 @@ function HowToColossus:Initialize()
 	
 	--Saved Variables
 	HowToColossus.savedVariables = ZO_SavedVars:New("HowToColossusVariables", 1, nil, HowToColossus.Default)
+	HowToColossus.GetSavedVariables()
 
 	--UI
-	HTCAlert_Name:SetHidden(false)
-	HTCAlert_Timer:SetHidden(false)
-	HTCAlert_Text:SetHidden(false)
+	HTCAlert_Name:SetHidden(true)
+	HTCAlert_Timer:SetHidden(true)
+	HTCAlert_Text:SetHidden(true)
 
 	--Events Register HowToColossus.OnCombatState
 	EVENT_MANAGER:RegisterForUpdate(HowToColossus.name .. "Update", 900, HowToColossus.UpdateGeneral)
 
-	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.OnCombatState)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Combat", EVENT_PLAYER_COMBAT_STATE, HowToColossus.OnCombatState)	
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, HowToColossus.OnGroupDeath)
 	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
 	
-	zo_callLater(function() HowToColossus.UpdateNext() end, 1000)
+	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.UpdateNext)
+	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Join", EVENT_GROUP_MEMBER_JOINED, HowToColossus.UpdateNext)
+	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Left", EVENT_GROUP_MEMBER_LEFT, HowToColossus.UpdateNext)
+	zo_callLater(function() HowToColossus.UpdateNext() end, 2000)
 
 	EVENT_MANAGER:UnregisterForEvent(HowToColossus.name, EVENT_ADD_ON_LOADED)
 	
