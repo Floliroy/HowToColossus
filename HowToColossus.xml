@@ -10,14 +10,14 @@
 			</OnMoveStop>
 
 			<Controls>
-				<Label name="$(parent)_Text" text="  COLOSSUS  " color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
+				<Label name="$(parent)_Text" text="  COLOSSUS" color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
 					<Anchor point="LEFT" relativePoint="CENTER" relativeTo="$(parent)_Name"/>
 				</Label>
 				<Label name="$(parent)_Name" text="@FLOLIROY" color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
 					<Anchor point="RIGHT" relativePoint="CENTER" relativeTo="$(parent)"/>
 				</Label>
 				<Label name="$(parent)_Timer" text="IN 4.2" color="AF25EB" inheritAlpha="true" font="$(BOLD_FONT)|$(KB_36)|soft-shadow-thick" verticalAlignment="CENTER" horizontalAlignment="CENTER" >
-					<Anchor point="LEFT" relativePoint="CENTER" relativeTo="$(parent)_Text"/>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)_Text"/>
 				</Label>
 			</Controls>
 

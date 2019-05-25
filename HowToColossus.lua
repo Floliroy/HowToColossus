@@ -55,7 +55,6 @@ end
 ---- Functions ----
 -------------------
 function HowToColossus.GetUltimatePercent(ultType)
-
 	local cost
 	if ultType == COLOSSUS then --colossus
 		cost = GetAbilityCost(122395)
@@ -148,11 +147,13 @@ function HowToColossus.GetNextColossus()
 	local name = " "
 	local playerTag = " "
 
-	for key, value in ipairs(HowToColossus.groupUltimates) do
+	for key, value in pairs(HowToColossus.groupUltimates) do
+
 		if value.ultType == COLOSSUS and value.ultPercent >= 100 then
 			return value.name, key
 
 		elseif value.ultType == COLOSSUS and value.ultPercent > ultPercent then
+
 			ultPercent = value.ultPercent
 			name = value.name
 			playerTag = key
@@ -164,6 +165,7 @@ function HowToColossus.GetNextColossus()
 end
 
 function HowToColossus.OnGroupDeath(eventCode, unitTag, isDead)
+	d("OnGroupDeath: " .. unitTag)
 	if HowToColossus.playerTag == unitTag and isDead then 
 		HowToColossus.UpdateAlert()
 
@@ -171,13 +173,16 @@ function HowToColossus.OnGroupDeath(eventCode, unitTag, isDead)
 end
 
 function HowToColossus.OnCombatState(eventCode, inCombat)
-	local inCombat = inCombat or false 
-	HowToColossus.targetTag = HowToColossus.GetTargetTag()
+	local inCombat = inCombat or IsUnitInCombat("player") 
 	
 	if not inCombat then
 		HowToColossus.UpdateNext()
 		EVENT_MANAGER:UnregisterForUpdate(HowToColossus.name .. "Alert")
 	else
+		local playerName, playerTag = HowToColossus.GetNextColossus()
+		HowToColossus.playerTag = playerTag
+		HowToColossus.targetTag = HowToColossus.GetTargetTag()
+
 		EVENT_MANAGER:RegisterForUpdate(HowToColossus.name .. "Alert", 100, HowToColossus.UpdateAlert)
 	end
 end
@@ -194,22 +199,23 @@ function HowToColossus.UpdateNext()
 	local playerName, playerTag = HowToColossus.GetNextColossus()
 	HowToColossus.playerTag = playerTag
 
-	HTCAlert_Name:SetText(playerName .. "  NEXT")
-	HTCAlert_Timer:SetText("")
+	HTCAlert_Name:SetText(string.upper(playerName) .. "  NEXT")
+	HTCAlert_Timer:SetText(" ")
 end
 
 function HowToColossus.UpdateIn(majorVulne)	
 	if majorVulne <= 0 then
-		HTCAlert_Timer:SetText("ASAP")
+		local playerName, playerTag = HowToColossus.GetNextColossus()
+		HTCAlert_Timer:SetText("  ASAP")
 	else
-		HTCAlert_Timer:SetText("IN  " .. majorVulne)
+		HTCAlert_Timer:SetText("  IN  " .. majorVulne)
 	end
 
 	if majorVulne > 4.9 then
 		local playerName, playerTag = HowToColossus.GetNextColossus()
 		HowToColossus.playerTag = playerTag
 
-		HTCAlert_Name:SetText(playerName)
+		HTCAlert_Name:SetText(string.upper(playerName))
 
 	end
 end
@@ -217,7 +223,8 @@ end
 function HowToColossus.UpdateAlert()
 	local majorVulne = HowToColossus.GetMajorVulneOn(HowToColossus.targetTag)
 
-	if HowToColossus.playerTag == "" or (HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent < 10 and majorVulne <= 0) then
+	if HowToColossus.playerTag == " " or HowToColossus.targetTag == " "  or HowToColossus.targetTag == "notOneBoss" 
+	or (HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent < 10 and majorVulne <= 0) then
 		HowToColossus.UpdateNext()
 	else
 		HowToColossus.UpdateIn(majorVulne)
@@ -236,14 +243,15 @@ function HowToColossus:Initialize()
 	HTCAlert_Timer:SetHidden(false)
 	HTCAlert_Text:SetHidden(false)
 
-
 	--Events Register HowToColossus.OnCombatState
+	EVENT_MANAGER:RegisterForUpdate(HowToColossus.name .. "Update", 900, HowToColossus.UpdateGeneral)
+
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.OnCombatState)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Combat", EVENT_PLAYER_COMBAT_STATE, HowToColossus.OnCombatState)	
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, HowToColossus.OnGroupDeath)
 	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
-
-	EVENT_MANAGER:RegisterForUpdate(HowToColossus.name .. "Update", 900, HowToColossus.UpdateGeneral)
+	
+	zo_callLater(function() HowToColossus.UpdateNext() end, 1000)
 
 	EVENT_MANAGER:UnregisterForEvent(HowToColossus.name, EVENT_ADD_ON_LOADED)
 	
