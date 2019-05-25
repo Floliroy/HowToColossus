@@ -18,7 +18,7 @@ function HowToColossus.GetUltimates()
 
             if LMP:IsPositionOnMap(x, y) then --and name ~= GetUnitDisplayName("player") then
                 local ultType = math.floor(x / WROTHGAR_MAP_STEP_SIZE)
-                local ultPercent = math.floor(y / WROTHGAR_MAP_STEP_SIZE)
+                local ultPercent = math.floor(y / WROTHGAR_MAP_STEP_SIZE) + 1
 
                 HowToColossus.groupUltimates["group" .. i] = {
                     name = name,

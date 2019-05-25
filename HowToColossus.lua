@@ -121,7 +121,7 @@ function HowToColossus.GetNextColossus(force)
 
 	for key, value in pairs(HowToColossus.groupUltimates) do
 		if not force or key ~= HowToColossus.playerTag then 
-			if value.ultType == COLOSSUS and value.ultPercent >= 99 then
+			if value.ultType == COLOSSUS and value.ultPercent >= 100 then
 				return value.name, key
 
 			elseif value.ultType == COLOSSUS and value.ultPercent > ultPercent then
