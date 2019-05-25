@@ -199,13 +199,16 @@ function HowToColossus.UpdateIn(majorVulne)
 		HTCAlert_Timer:SetText("  IN  " .. tostring(string.format("%.1f", majorVulne + cptMajorVulne)))
 	end
 
-	if majorVulne > 2.9 and flagMajorVulne == true then
-		local playerName, playerTag = HowToColossus.GetNextColossus()
-		HowToColossus.playerTag = playerTag
-		HTCAlert_Name:SetText(string.upper(playerName))
+	if majorVulne > 2.9 then
+		if flagMajorVulne == true then
+			local playerName, playerTag = HowToColossus.GetNextColossus()
+			HowToColossus.playerTag = playerTag
+			HTCAlert_Name:SetText(string.upper(playerName))
+
+			flagMajorVulne = false
+		end
 
 		cptMajorVulne = cptMajorVulne - 1
-		flagMajorVulne = false
 	end
 end
 
