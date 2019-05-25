@@ -208,12 +208,12 @@ function HowToColossus.UpdateIn(majorVulne)
 
 	if majorVulne > 2.9 then
 		if flagMajorVulne == true then
-			local playerName, playerTag = HowToColossus.GetNextColossus(true)
+			local playerName, playerTag = HowToColossus.GetNextColossus(false)
 			HowToColossus.playerTag = playerTag
 			HTCAlert_Name:SetText(string.upper(playerName))
 
 			flagMajorVulne = false
-		end
+		end	
 
 		cptMajorVulne = cptMajorVulne - 1
 	end
