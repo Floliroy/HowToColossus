@@ -2,7 +2,7 @@
 ## APIVersion: 100027
 ## Author: Floliroy
 ## Version: 0.1
-## DependsOn: LibStub LibAddonMenu-2.0 LibGroupSocket
+## DependsOn: LibStub LibAddonMenu-2.0 LibMapPing LibGPS
 ## SavedVariables: HowToColossusVariables
 
 ; This Add-on is not created by, affiliated with or sponsored by ZeniMax Media Inc. or its affiliates. 
