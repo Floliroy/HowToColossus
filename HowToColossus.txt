@@ -18,7 +18,8 @@ Lib/LibCustomTitles/Titles/Floliroy.lua
 Lib/LibGroupSocket/LibGroupSocket.lua
 Lib/LibGroupSocket/handlers/UltimateHandler.lua
 
-HowToColossus.lua
 HowToColossusShare.lua
 HowToColossusMenu.lua
+HowToColossus.lua
+
 HowToColossus.xml

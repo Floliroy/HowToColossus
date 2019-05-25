@@ -21,15 +21,15 @@ HowToColossus.Default = {
 ---- Functions ----
 -------------------
 function HowToColossus.GetSavedVariables()
-    HowToColossus.enabled = HowToColossus.enabled
-	HowToColossus.lockUI = HowToColossus.lockUI
+    HowToColossus.enabled = HowToColossus.savedVariables.enabled
+	HowToColossus.lockUI = HowToColossus.savedVariables.lockUI
 
-	HowToColossus.shareColossus = HowToColossus.shareColossus
-	HowToColossus.showColossus = HowToColossus.showColossus
-	HowToColossus.alertColossus = HowToColossus.alertColossus
-	HowToColossus.shareHorn = HowToColossus.shareHorn
-	HowToColossus.showHorn = HowToColossus.showHorn
-	HowToColossus.alertHorn = HowToColossus.alertHorn
+	HowToColossus.shareColossus = HowToColossus.savedVariables.shareColossus
+	HowToColossus.showColossus = HowToColossus.savedVariables.showColossus
+	HowToColossus.alertColossus = HowToColossus.savedVariables.alertColossus
+	HowToColossus.shareHorn = HowToColossus.savedVariables.shareHorn
+	HowToColossus.showHorn = HowToColossus.savedVariables.showHorn
+	HowToColossus.alertHorn = HowToColossus.savedVariables.alertHorn
 end
 
 --------------

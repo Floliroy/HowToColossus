@@ -244,7 +244,7 @@ function HowToColossus:Initialize()
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.UpdateNext)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Join", EVENT_GROUP_MEMBER_JOINED, HowToColossus.UpdateNext)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Left", EVENT_GROUP_MEMBER_LEFT, HowToColossus.UpdateNext)
-	zo_callLater(function() HowToColossus.UpdateNext() end, 3000)
+	zo_callLater(function() HowToColossus.UpdateNext() end, 2000)
 
 	EVENT_MANAGER:UnregisterForEvent(HowToColossus.name, EVENT_ADD_ON_LOADED)
 	
