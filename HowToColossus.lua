@@ -19,8 +19,8 @@ local HORN_ID = 40224
 
 --variables
 HowToColossus.groupUltimates = {}
-HowToColossus.playerTag = " "
-HowToColossus.targetTag = " "
+HowToColossus.playerTag = ""
+HowToColossus.targetTag = ""
 
 -------------------
 ---- Functions ----
@@ -56,7 +56,7 @@ function HowToColossus.GetTargetTag()
 		return "reticleover"
 	end
 	local cpt = 0
-	local targetTag = " "
+	local targetTag = ""
 
 	
 	for i = 1, MAX_BOSSES do
@@ -114,30 +114,37 @@ function HowToColossus.GetHornInGroup()
 	end
 end
 
-function HowToColossus.GetNextColossus()
+function HowToColossus.GetNextColossus(force)
 	local ultPercent = 0
-	local name = " "
-	local playerTag = " "
+	local name = ""
+	local playerTag = ""
 
 	for key, value in pairs(HowToColossus.groupUltimates) do
+		if not force or key ~= HowToColossus.playerTag then 
+			if value.ultType == COLOSSUS and value.ultPercent >= 99 then
+				return value.name, key
 
-		if value.ultType == COLOSSUS and value.ultPercent >= 99 then
-			return value.name, key
+			elseif value.ultType == COLOSSUS and value.ultPercent > ultPercent then
 
-		elseif value.ultType == COLOSSUS and value.ultPercent > ultPercent then
+				ultPercent = value.ultPercent
+				name = value.name
+				playerTag = key
 
-			ultPercent = value.ultPercent
-			name = value.name
-			playerTag = key
-
+			end
 		end
 	end
 
 	return name, playerTag
 end
 
-function HowToColossus.GetNameWithTag()
-	return HowToColossus.groupUltimates[HowToColossus.playerTag].name
+function HowToColossus.GetInfoWithTag()
+	if HowToColossus.groupUltimates[HowToColossus.playerTag] then 
+		return 	HowToColossus.groupUltimates[HowToColossus.playerTag].name,
+				HowToColossus.groupUltimates[HowToColossus.playerTag].ultType,
+				HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent
+	else
+		return "", 0, 0
+	end
 end
 
 function HowToColossus.OnGroupDeath(eventCode, unitTag, isDead)
@@ -162,28 +169,29 @@ end
 --------------
 ---- Main ----
 --------------
-function HowToColossus.UltimateUsed()
-	if GetUnitPower("player", POWERTYPE_ULTIMATE) <= 3 then
-		HowToColossus.Share()
-	end
-end
-
 function HowToColossus.UpdateGeneral()
 	HowToColossus.Share()
+
+	local _, _, ultPercent = HowToColossus.GetInfoWithTag()
+	if ultPercent < 10 then
+		local playerName, playerTag = HowToColossus.GetNextColossus(true)
+		HowToColossus.playerTag = playerTag
+		HTCAlert_Name:SetText(string.upper(playerName))
+	end
 	--TODO HowToColossus.UpdatePannel()
 end
 
 function HowToColossus.UpdateNext()
-	local playerName, playerTag = HowToColossus.GetNextColossus()
+	local playerName, playerTag = HowToColossus.GetNextColossus(false)
 	HowToColossus.playerTag = playerTag
 	HTCAlert_Name:SetHidden(false)
 	HTCAlert_Timer:SetHidden(false)
 	HTCAlert_Text:SetHidden(false)
 
-	if playerName ~= " " then
+	if playerName ~= "" then
 		
 		HTCAlert_Name:SetText(string.upper(playerName) .. "  NEXT")
-		HTCAlert_Timer:SetText(" ")
+		HTCAlert_Timer:SetText("")
 	else
 		HTCAlert_Name:SetHidden(true)
 		HTCAlert_Timer:SetHidden(true)
@@ -200,7 +208,7 @@ function HowToColossus.UpdateIn(majorVulne)
 
 	if majorVulne > 2.9 then
 		if flagMajorVulne == true then
-			local playerName, playerTag = HowToColossus.GetNextColossus()
+			local playerName, playerTag = HowToColossus.GetNextColossus(true)
 			HowToColossus.playerTag = playerTag
 			HTCAlert_Name:SetText(string.upper(playerName))
 
@@ -214,7 +222,7 @@ function HowToColossus.UpdateIn(majorVulne)
 		cptMajorVulne = 3
 		flagMajorVulne = true 
 		
-		local name = HowToColossus.groupUltimates[HowToColossus.playerTag].name
+		local name, _, _ = HowToColossus.GetInfoWithTag()
 		HTCAlert_Name:SetText(string.upper(name))
 		HTCAlert_Timer:SetText("  ASAP")
 	else
@@ -224,9 +232,9 @@ end
 
 function HowToColossus.UpdateAlert()
 	local majorVulne = HowToColossus.GetMajorVulneOn(HowToColossus.targetTag)
+	local _, _, ultPercent = HowToColossus.GetInfoWithTag()
 
-	if HowToColossus.playerTag == " " or HowToColossus.targetTag == " "  or HowToColossus.targetTag == "notOneBoss" 
-	or (HowToColossus.groupUltimates[HowToColossus.playerTag].ultPercent < 10 and majorVulne <= 0) then
+	if HowToColossus.playerTag == "" or HowToColossus.targetTag == ""  or HowToColossus.targetTag == "notOneBoss" or (ultPercent < 10 and majorVulne <= 0) then
 		HowToColossus.UpdateNext()
 	else
 		HowToColossus.UpdateIn(majorVulne)
@@ -253,9 +261,6 @@ function HowToColossus:Initialize()
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Combat", EVENT_PLAYER_COMBAT_STATE, HowToColossus.OnCombatState)	
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, HowToColossus.OnGroupDeath)
 	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Death", EVENT_UNIT_DEATH_STATE_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
-
-	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Ultimate", EVENT_POWER_UPDATE, HowToColossus.UltimateUsed)	
-	EVENT_MANAGER:AddFilterForEvent(HowToColossus.name .. "Ultimate", EVENT_POWER_UPDATE, REGISTER_FILTER_UNIT_TAG, "player", REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE)
 	
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Activate", EVENT_PLAYER_ACTIVATED, HowToColossus.UpdateNext)
 	EVENT_MANAGER:RegisterForEvent(HowToColossus.name .. "Join", EVENT_GROUP_MEMBER_JOINED, HowToColossus.UpdateNext)
@@ -267,8 +272,8 @@ function HowToColossus:Initialize()
 end
 
 function HowToColossus.SaveLoc()
-	HowToColossus.savedVariables.OffsetX = HTCAlert:GetLeft()
-	HowToColossus.savedVariables.OffsetY = HTCAlert:GetTop()
+	--HowToColossus.savedVariables.OffsetX = HTCAlert:GetLeft()
+	--HowToColossus.savedVariables.OffsetY = HTCAlert:GetTop()
 end	
  
 function HowToColossus.OnAddOnLoaded(event, addonName)
