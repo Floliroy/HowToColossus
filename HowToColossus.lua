@@ -121,7 +121,7 @@ function HowToColossus.GetNextColossus()
 
 	for key, value in pairs(HowToColossus.groupUltimates) do
 
-		if value.ultType == COLOSSUS and value.ultPercent >= 100 then
+		if value.ultType == COLOSSUS and value.ultPercent >= 99 then
 			return value.name, key
 
 		elseif value.ultType == COLOSSUS and value.ultPercent > ultPercent then
@@ -188,17 +188,6 @@ function HowToColossus.UpdateIn(majorVulne)
 	HTCAlert_Timer:SetHidden(false)
 	HTCAlert_Text:SetHidden(false)
 
-	if majorVulne <= 0 then
-		cptMajorVulne = 3
-		flagMajorVulne = true 
-		
-		local name = HowToColossus.groupUltimates[HowToColossus.playerTag].name
-		HTCAlert_Name:SetText(string.upper(name))
-		HTCAlert_Timer:SetText("  ASAP")
-	else
-		HTCAlert_Timer:SetText("  IN  " .. tostring(string.format("%.1f", majorVulne + cptMajorVulne)))
-	end
-
 	if majorVulne > 2.9 then
 		if flagMajorVulne == true then
 			local playerName, playerTag = HowToColossus.GetNextColossus()
@@ -210,6 +199,17 @@ function HowToColossus.UpdateIn(majorVulne)
 
 		cptMajorVulne = cptMajorVulne - 1
 	end
+
+	if majorVulne <= 0 then
+		cptMajorVulne = 3
+		flagMajorVulne = true 
+		
+		local name = HowToColossus.groupUltimates[HowToColossus.playerTag].name
+		HTCAlert_Name:SetText(string.upper(name))
+		HTCAlert_Timer:SetText("  ASAP")
+	else
+		HTCAlert_Timer:SetText("  IN  " .. tostring(string.format("%.1f", majorVulne + cptMajorVulne)))
+	end	
 end
 
 function HowToColossus.UpdateAlert()
