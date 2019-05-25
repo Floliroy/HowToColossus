@@ -52,9 +52,13 @@ function HowToColossus.Share()
 end
 
 function HowToColossus.GetTargetTag()
+	if 1 then
+		return "reticleover"
+	end
 	local cpt = 0
 	local targetTag = " "
 
+	
 	for i = 1, MAX_BOSSES do
 		if DoesUnitExist("boss" .. i) then
 			targetTag = "boss" .. i
@@ -133,7 +137,6 @@ function HowToColossus.GetNextColossus()
 end
 
 function HowToColossus.OnGroupDeath(eventCode, unitTag, isDead)
-	d("OnGroupDeath: " .. unitTag)
 	if HowToColossus.playerTag == unitTag and isDead then 
 		HowToColossus.UpdateAlert()
 
@@ -178,23 +181,31 @@ function HowToColossus.UpdateNext()
 	end
 end
 
+local flagMajorVulne = true
+local cptMajorVulne = 3
 function HowToColossus.UpdateIn(majorVulne)	
 	HTCAlert_Name:SetHidden(false)
 	HTCAlert_Timer:SetHidden(false)
 	HTCAlert_Text:SetHidden(false)
 
 	if majorVulne <= 0 then
+		cptMajorVulne = 3
+		flagMajorVulne = true 
+		
+		local name = HowToColossus.groupUltimates[HowToColossus.playerTag].name
+		HTCAlert_Name:SetText(string.upper(name))
 		HTCAlert_Timer:SetText("  ASAP")
 	else
-		HTCAlert_Timer:SetText("  IN  " .. majorVulne)
+		HTCAlert_Timer:SetText("  IN  " .. tostring(string.format("%.1f", majorVulne + cptMajorVulne)))
 	end
 
-	if majorVulne > 4.9 then
+	if majorVulne > 2.9 and flagMajorVulne == true then
 		local playerName, playerTag = HowToColossus.GetNextColossus()
 		HowToColossus.playerTag = playerTag
-
 		HTCAlert_Name:SetText(string.upper(playerName))
 
+		cptMajorVulne = cptMajorVulne - 1
+		flagMajorVulne = false
 	end
 end
 
@@ -210,13 +221,14 @@ function HowToColossus.UpdateAlert()
 end
 
 function HowToColossus:Initialize()
-	--Settings
-	HowToColossus.CreateSettingsWindow()
-	
+
 	--Saved Variables
 	HowToColossus.savedVariables = ZO_SavedVars:New("HowToColossusVariables", 1, nil, HowToColossus.Default)
 	HowToColossus.GetSavedVariables()
 
+	--Settings
+	HowToColossus.CreateSettingsWindow()
+	
 	--UI
 	HTCAlert_Name:SetHidden(true)
 	HTCAlert_Timer:SetHidden(true)
